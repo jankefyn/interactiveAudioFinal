@@ -1,28 +1,35 @@
+import express, { Request, Response } from 'express';
 import { MongoClient, Db, ObjectId } from 'mongodb';
 
+const app = express();
+const port = 3000;
+
+// MongoDB connection setup
+const uri = 'mongodb+srv://FynnJ:nicnjX5MjRSm4wtu@gis-ist-geil.wb5k5.mongodb.net/?retryWrites=true&w=majority';
+const client = new MongoClient(uri);
+
+async function connectToMongoDB(): Promise<void> {
+  try {
+    await client.connect();
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error('Error connecting to MongoDB', error);
+  }
+}
+
 interface Location {
-  _id: ObjectId;
   name: string;
   latitude: number;
   longitude: number;
   soundUrl: string;
 }
 
-let locations: Location[] = [];
-
-
-
-// Function to insert a location into the database
-async function insertLocation(name: string, latitude: number, longitude: number, soundUrl: string): Promise<void> {
-  const uri = 'mongodb+srv://FynnJ:nicnjX5MjRSm4wtu@gis-ist-geil.wb5k5.mongodb.net/?retryWrites=true&w=majority';
-  const client = new MongoClient(uri);
-
+// Save location endpoint
+app.post('/saveLocation', async (req: Request, res: Response) => {
+  const {name, latitude, longitude, soundUrl } = req.body as Location;
   try {
-    await client.connect();
-    console.log('Connected to MongoDB');
-
     const db: Db = client.db('Interactive_Audio');
-    const locationsCollection = db.collection('locations');
+    const locationsCollection = db.collection<Location>('locations');
 
     const location = {
       name,
@@ -32,71 +39,18 @@ async function insertLocation(name: string, latitude: number, longitude: number,
     };
 
     // Insert the location document
-    await locationsCollection.insertOne(location);
+    const result = await locationsCollection.insertOne(location);
     console.log('Location inserted successfully');
+
+    res.status(200).json({ success: true, locationId: result.insertedId });
   } catch (error) {
     console.error('Error inserting location', error);
-  } finally {
-    await client.close();
-    console.log('Disconnected from MongoDB');
-  }
-}
-
-// Function to retrieve locations from the database
-async function getLocations(): Promise<Location[]> {
-  const uri = 'mongodb+srv://FynnJ:nicnjX5MjRSm4wtu@gis-ist-geil.wb5k5.mongodb.net/?retryWrites=true&w=majority';
-  const client = new MongoClient(uri);
-
-  try {
-    await client.connect();
-    console.log('Connected to MongoDB');
-
-    const db: Db = client.db('Interactive_Audio');
-    const locationsCollection = db.collection('locations');
-
-    // Retrieve all documents from the collection
-    const documents = await locationsCollection.find().toArray();
-
-    // Map the MongoDB documents to the Location interface
-    const locations: Location[] = documents.map((document: any) => ({
-      _id: document._id,
-      name: document.name,
-      latitude: document.latitude,
-      longitude: document.longitude,
-      soundUrl: document.soundUrl,
-    }));
-
-    console.log('Retrieved locations:', locations);
-    return locations;
-  } catch (error) {
-    console.error('Error retrieving locations', error);
-    return [];
-  } finally {
-    await client.close();
-    console.log('Disconnected from MongoDB');
-  }
-}
-
-// Usage example
-console.log(getLocations());
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-  const saveLocationButton = document.getElementById('saveLocationButton');
-
-  if (saveLocationButton) {
-    saveLocationButton.addEventListener('click', saveLocation);
-  }
-
-  async function saveLocation() {
-    
-
-    await insertLocation("asdf",2,3,"asdf");
+    res.status(500).json({ success: false, error: 'Failed to save location' });
   }
 });
 
-
-
-//functionality
-
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+  connectToMongoDB();
+});
