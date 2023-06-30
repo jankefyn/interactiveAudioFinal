@@ -21,10 +21,12 @@ async function connectToMongoDB() {
 }
 // Save location endpoint
 app.post('/saveLocation', async (req, res) => {
+    console.log("hiiiieeer");
     const { id, name, latitude, longitude, soundUrl } = req.body;
     try {
         const db = client.db('Interactive_Audio');
         const locationsCollection = db.collection('locations');
+        console.log("hello i am here");
         const location = {
             id,
             name,
@@ -41,4 +43,9 @@ app.post('/saveLocation', async (req, res) => {
         console.error('Error inserting location', error);
         res.status(500).json({ success: false, error: 'Failed to save location' });
     }
+});
+// Start the server
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+    connectToMongoDB();
 });

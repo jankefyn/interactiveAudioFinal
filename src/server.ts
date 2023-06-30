@@ -27,11 +27,14 @@ interface Location {
 
 // Save location endpoint
 app.post('/saveLocation', async (req: Request, res: Response) => {
+
+  console.log("hiiiieeer");
   const { id, name, latitude, longitude, soundUrl } = req.body as Location;
 
   try {
     const db: Db = client.db('Interactive_Audio');
     const locationsCollection = db.collection<Location>('locations');
+    console.log("hello i am here");
 
     const location = {
       id,
@@ -50,4 +53,9 @@ app.post('/saveLocation', async (req: Request, res: Response) => {
     console.error('Error inserting location', error);
     res.status(500).json({ success: false, error: 'Failed to save location' });
   }
+});
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+  connectToMongoDB();
 });
