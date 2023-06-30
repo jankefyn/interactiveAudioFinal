@@ -40,15 +40,10 @@ app.post('/saveLocation', (req, res) => __awaiter(void 0, void 0, void 0, functi
         // Insert the location document
         const result = yield locationsCollection.insertOne(location);
         console.log('Location inserted successfully');
-        res.status(200).json({ success: true, locationId: result.insertedId });
+        res.status(200).json({ success: true, locationId: result.insertedId.toString() });
     }
     catch (error) {
         console.error('Error inserting location', error);
         res.status(500).json({ success: false, error: 'Failed to save location' });
     }
 }));
-// Start the server
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-    connectToMongoDB();
-});
