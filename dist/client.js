@@ -15,8 +15,9 @@ document.addEventListener('DOMContentLoaded', function () {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: "" + id + "," + name + "," + latitude + "," + longitude + "," + soundUrl,
+            body: JSON.stringify({ id, name, latitude, longitude, soundUrl }),
         });
+        console.log(await response);
         const data = await response.json();
         if (data.success) {
             console.log('Location saved successfully. Location ID:', data.locationId);

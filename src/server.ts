@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { MongoClient, Db, ObjectId } from 'mongodb';
+import cors from 'cors';
 
 const app = express();
 const port = 3000;
@@ -18,7 +19,7 @@ async function connectToMongoDB(): Promise<void> {
 }
 
 interface Location {
-  id:number;
+  id: number;
   name: string;
   latitude: number;
   longitude: number;
@@ -27,14 +28,11 @@ interface Location {
 
 // Save location endpoint
 app.post('/saveLocation', async (req: Request, res: Response) => {
-
-  console.log("hiiiieeer");
   const { id, name, latitude, longitude, soundUrl } = req.body as Location;
 
   try {
     const db: Db = client.db('Interactive_Audio');
     const locationsCollection = db.collection<Location>('locations');
-    console.log("hello i am here");
 
     const location = {
       id,
@@ -54,6 +52,13 @@ app.post('/saveLocation', async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: 'Failed to save location' });
   }
 });
+
+// Apply CORS middleware
+const allowedOrigins = ['http://127.0.0.1:5500/index.html']; // Add your client's domain here
+app.use(cors({
+  origin: allowedOrigins,
+}));
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

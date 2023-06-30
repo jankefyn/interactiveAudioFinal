@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongodb_1 = require("mongodb");
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 const port = 3000;
 // MongoDB connection setup
@@ -21,12 +22,10 @@ async function connectToMongoDB() {
 }
 // Save location endpoint
 app.post('/saveLocation', async (req, res) => {
-    console.log("hiiiieeer");
     const { id, name, latitude, longitude, soundUrl } = req.body;
     try {
         const db = client.db('Interactive_Audio');
         const locationsCollection = db.collection('locations');
-        console.log("hello i am here");
         const location = {
             id,
             name,
@@ -44,6 +43,11 @@ app.post('/saveLocation', async (req, res) => {
         res.status(500).json({ success: false, error: 'Failed to save location' });
     }
 });
+// Apply CORS middleware
+const allowedOrigins = ['http://127.0.0.1:5500/index.html']; // Add your client's domain here
+app.use((0, cors_1.default)({
+    origin: allowedOrigins,
+}));
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
