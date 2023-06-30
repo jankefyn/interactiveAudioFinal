@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,8 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function saveLocation() {
         return __awaiter(this, void 0, void 0, function* () {
             const name = prompt('Enter the location name:');
-            const latitude = parseFloat("" + (prompt('Enter the latitude:')));
-            const longitude = parseFloat("" + (prompt('Enter the longitude:')));
+            const latitude = parseFloat("" + prompt('Enter the latitude:'));
+            const longitude = parseFloat("" + prompt('Enter the longitude:'));
             const soundUrl = prompt('Enter the sound URL:');
             const response = yield fetch('/saveLocation', {
                 method: 'POST',
@@ -35,4 +36,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
-export {};
