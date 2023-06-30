@@ -3,7 +3,12 @@ import { MongoClient, Db, ObjectId } from 'mongodb';
 import cors from 'cors';
 
 const app = express();
-const port = 3000;
+const port = 5500;
+
+// Apply CORS middleware
+
+app.use(cors());
+app.use(express.json()); // Parse JSON request bodies
 
 // MongoDB connection setup
 const uri = 'mongodb+srv://FynnJ:nicnjX5MjRSm4wtu@gis-ist-geil.wb5k5.mongodb.net/?retryWrites=true&w=majority';
@@ -28,6 +33,8 @@ interface Location {
 
 // Save location endpoint
 app.post('/saveLocation', async (req: Request, res: Response) => {
+console.log("hallo");
+console.log(req.body);
   const { id, name, latitude, longitude, soundUrl } = req.body as Location;
 
   try {
@@ -53,11 +60,7 @@ app.post('/saveLocation', async (req: Request, res: Response) => {
   }
 });
 
-// Apply CORS middleware
-const allowedOrigins = ['http://127.0.0.1:5500/index.html']; // Add your client's domain here
-app.use(cors({
-  origin: allowedOrigins,
-}));
+
 
 // Start the server
 app.listen(port, () => {
