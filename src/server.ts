@@ -18,6 +18,7 @@ async function connectToMongoDB(): Promise<void> {
 }
 
 interface Location {
+  id:number;
   name: string;
   latitude: number;
   longitude: number;
@@ -26,13 +27,14 @@ interface Location {
 
 // Save location endpoint
 app.post('/saveLocation', async (req: Request, res: Response) => {
-  const { name, latitude, longitude, soundUrl } = req.body as Location;
+  const { id, name, latitude, longitude, soundUrl } = req.body as Location;
 
   try {
     const db: Db = client.db('Interactive_Audio');
     const locationsCollection = db.collection<Location>('locations');
 
     const location = {
+      id,
       name,
       latitude,
       longitude,

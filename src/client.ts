@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   
     async function saveLocation() {
+      const id = prompt('enter id')
       const name = prompt('Enter the location name:');
       const latitude = parseFloat(""+prompt('Enter the latitude:'));
       const longitude = parseFloat(""+prompt('Enter the longitude:'));
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, latitude, longitude, soundUrl }),
+        body: JSON.stringify({ id, name, latitude, longitude, soundUrl }),
       });
   
       const data = await response.json();
