@@ -48,6 +48,20 @@ app.post('/saveLocation', async (req, res) => {
         res.status(500).json({ success: false, error: 'Failed to save location' });
     }
 });
+// Get all locations endpoint
+app.get('/getLocations', async (req, res) => {
+    try {
+        const db = client.db('Interactive_Audio');
+        const locationsCollection = db.collection('locations');
+        const locations = await locationsCollection.find().toArray();
+        console.log('Locations retrieved successfully');
+        res.status(200).json({ success: true, locations });
+    }
+    catch (error) {
+        console.error('Error retrieving locations', error);
+        res.status(500).json({ success: false, error: 'Failed to retrieve locations' });
+    }
+});
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
