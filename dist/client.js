@@ -76,7 +76,6 @@ const options = {
 };
 async function startGame() {
     if (startButton != null) {
-        console.log("hallpo0");
         startButton.classList.add("hidden");
     }
     if (saveLocationButton != null) {
@@ -131,7 +130,6 @@ function checkForLocations(_currentCoordinates) {
             }
         }
         if (musicPlaying && location.name === lastLocation && d > 10) {
-            console.log("ich brech ab");
             stopAudio();
             musicPlaying = false;
         }
