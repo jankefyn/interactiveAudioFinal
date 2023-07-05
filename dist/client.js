@@ -84,6 +84,7 @@ async function startGame() {
     await getLocations();
     audioContext = new AudioContext();
     for (let location of receivedlocations) {
+        console.log(location.soundUrl);
         loadSound(location.soundUrl);
     }
     if ("geolocation" in navigator) {
@@ -124,7 +125,7 @@ function checkForLocations(_currentCoordinates) {
                 playAudioFromFile(location.soundUrl, true);
                 musicPlaying = true;
                 currentsound = location.soundUrl;
-                lastLocation = location.soundUrl;
+                lastLocation = location.name;
                 currentCoordinates.textContent = " du befindest dich in der nähe von: " + location.name + " deshalb hörst du etwas.";
                 break;
             }
@@ -137,8 +138,40 @@ function checkForLocations(_currentCoordinates) {
 }
 //audio
 let sourceNode = null;
-function playAudioFromFile(filePath, loop = false) {
+function playAudioFromFile(song, loop = false) {
     const audioContext = new AudioContext();
+    let number = +song;
+    let filePath = "";
+    switch (number) {
+        case 1:
+            filePath = "../sounds/iBau.mp3";
+            console.log("Case 1");
+            break;
+        case 2:
+            console.log("Case 2");
+            break;
+        case 3:
+            console.log("Case 3");
+            break;
+        case 4:
+            console.log("Case 4");
+            break;
+        case 5:
+            console.log("Case 5");
+            break;
+        case 6:
+            console.log("Case 6");
+            break;
+        case 7:
+            console.log("Case 7");
+            break;
+        case 8:
+            console.log("Case 8");
+            break;
+        default:
+            console.log("Invalid case");
+            break;
+    }
     fetch(filePath)
         .then(response => response.arrayBuffer())
         .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
@@ -163,9 +196,41 @@ function stopAudio() {
         sourceNode = null;
     }
 }
-async function loadSound(_url) {
-    let response = await fetch(_url);
+async function loadSound(_sound) {
+    let filePath = "";
+    let number = +_sound;
+    switch (number) {
+        case 1:
+            filePath = "../sounds/iBau.mp3";
+            console.log("Case 1");
+            break;
+        case 2:
+            console.log("Case 2");
+            break;
+        case 3:
+            console.log("Case 3");
+            break;
+        case 4:
+            console.log("Case 4");
+            break;
+        case 5:
+            console.log("Case 5");
+            break;
+        case 6:
+            console.log("Case 6");
+            break;
+        case 7:
+            console.log("Case 7");
+            break;
+        case 8:
+            console.log("Case 8");
+            break;
+        default:
+            console.log("Invalid case");
+            break;
+    }
+    let response = await fetch(filePath);
     let arraybuffer = await response.arrayBuffer();
     let audioBuffer = await audioContext.decodeAudioData(arraybuffer);
-    audioBufferMap.set(_url, audioBuffer);
+    audioBufferMap.set(filePath, audioBuffer);
 }

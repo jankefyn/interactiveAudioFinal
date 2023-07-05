@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const requestData: Location = {
       id: 1,
-      name: ""+prompt("enter a name for the location"),
+      name: "" + prompt("enter a name for the location"),
       latitude: currentPosition.coords.latitude,
       longitude: currentPosition.coords.longitude,
-      soundUrl: ""+prompt("write a url for a sound you want to be played")
+      soundUrl: "" + prompt("write a url for a sound you want to be played")
     };
 
     const xhr = new XMLHttpRequest();
@@ -57,7 +57,7 @@ async function getLocations(): Promise<void> {
   xhr.open('GET', `${serverUrl}/getLocations`, true);
 
   xhr.onreadystatechange = function () {
-    if (xhr.readyState === XMLHttpRequest.DONE) { 
+    if (xhr.readyState === XMLHttpRequest.DONE) {
       if (xhr.status === 200) {
         const response = JSON.parse(xhr.responseText);
         const { success, locations } = response;
@@ -115,6 +115,7 @@ async function startGame(): Promise<void> {
   await getLocations();
   audioContext = new AudioContext();
   for (let location of receivedlocations) {
+    console.log(location.soundUrl);
     loadSound(location.soundUrl);
   }
   if ("geolocation" in navigator) {
@@ -160,7 +161,7 @@ function checkForLocations(_currentCoordinates: GeolocationPosition): void {
         playAudioFromFile(location.soundUrl, true);
         musicPlaying = true;
         currentsound = location.soundUrl;
-        lastLocation = location.soundUrl;
+        lastLocation = location.name;
         currentCoordinates.textContent = " du befindest dich in der nähe von: " + location.name + " deshalb hörst du etwas."
 
         break;
@@ -179,9 +180,41 @@ function checkForLocations(_currentCoordinates: GeolocationPosition): void {
 
 let sourceNode: AudioBufferSourceNode | null = null;
 
-function playAudioFromFile(filePath: string, loop: boolean = false): void {
+function playAudioFromFile(song: string, loop: boolean = false): void {
   const audioContext = new AudioContext();
+  let number: number = +song;
+  let filePath: string = "";
 
+  switch (number) {
+    case 1:
+      filePath = "../sounds/iBau.mp3"
+      console.log("Case 1");
+      break;
+    case 2:
+      console.log("Case 2");
+      break;
+    case 3:
+      console.log("Case 3");
+      break;
+    case 4:
+      console.log("Case 4");
+      break;
+    case 5:
+      console.log("Case 5");
+      break;
+    case 6:
+      console.log("Case 6");
+      break;
+    case 7:
+      console.log("Case 7");
+      break;
+    case 8:
+      console.log("Case 8");
+      break;
+    default:
+      console.log("Invalid case");
+      break;
+  }
   fetch(filePath)
     .then(response => response.arrayBuffer())
     .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
@@ -207,9 +240,42 @@ function stopAudio(): void {
     sourceNode = null;
   }
 }
-async function loadSound(_url: string): Promise<void> {
-  let response: Response = await fetch(_url);
+async function loadSound(_sound:string): Promise<void> {
+  let filePath: string = "";
+  let number: number = +_sound;
+  switch (number) {
+    case 1:
+      filePath = "../sounds/iBau.mp3"
+      console.log("Case 1");
+      break;
+    case 2:
+      console.log("Case 2");
+      break;
+    case 3:
+      console.log("Case 3");
+      break;
+    case 4:
+      console.log("Case 4");
+      break;
+    case 5:
+      console.log("Case 5");
+      break;
+    case 6:
+      console.log("Case 6");
+      break;
+    case 7:
+      console.log("Case 7");
+      break;
+    case 8:
+      console.log("Case 8");
+      break;
+    default:
+      console.log("Invalid case");
+      break;
+  }
+
+  let response: Response = await fetch(filePath);
   let arraybuffer: ArrayBuffer = await response.arrayBuffer();
   let audioBuffer: AudioBuffer = await audioContext.decodeAudioData(arraybuffer);
-  audioBufferMap.set(_url, audioBuffer);
+  audioBufferMap.set(filePath, audioBuffer);
 }
