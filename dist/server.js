@@ -10,7 +10,7 @@ const app = (0, express_1.default)();
 const port = 5500;
 // Apply CORS middleware
 app.use((0, cors_1.default)());
-app.use(express_1.default.json()); // Parse JSON request bodies
+app.use(express_1.default.json({ limit: '10mb' })); // Parse JSON request bodies
 // MongoDB connection setup
 const uri = 'mongodb+srv://FynnJ:nicnjX5MjRSm4wtu@gis-ist-geil.wb5k5.mongodb.net/?retryWrites=true&w=majority';
 const client = new mongodb_1.MongoClient(uri);
@@ -23,20 +23,18 @@ async function connectToMongoDB() {
         console.error('Error connecting to MongoDB', error);
     }
 }
-// Save location endpoint
 app.post('/saveLocation', async (req, res) => {
-    console.log("hallo");
-    console.log(req.body);
-    const { id, name, latitude, longitude, soundUrl } = req.body;
+    const { id, name, latitude, longitude, recordedAudio } = req.body;
     try {
         const db = client.db('Interactive_Audio');
         const locationsCollection = db.collection('locations');
+        const audioBuffer = Buffer.from(recordedAudio, 'base64');
         const location = {
             id,
             name,
             latitude,
             longitude,
-            soundUrl,
+            recordedAudio: recordedAudio
         };
         // Insert the location document
         const result = await locationsCollection.insertOne(location);

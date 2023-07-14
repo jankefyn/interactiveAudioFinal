@@ -31,60 +31,10 @@
   margin: 10px;
   cursor: pointer;
 }
-
-
-
-
 .button-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-.square-button {
-  width: 200px;
-  height: 200px;
-  margin: 10px;
-  border: none;
-  border-radius: 10px;
-  font-size: 18px;
-  color: #ffffff;
-  text-align: center;
-  cursor: pointer;
-}
 
-/* Button Colors */
-#songButtonOne { background-color: #ff5733; }
-#songButtonTwo { background-color: #ffca18; }
-#songButtonThree { background-color: #1aff1a; }
-#songButtonFour { background-color: #3399ff; }
-#songButtonFive { background-color: #b966ff; }
-#songButtonSix { background-color: #ff4dff; }
-#songButtonSeven { background-color: #ff9933; }
-#songButtonEight { background-color: #999966; }
-
-.button-icon {
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-  background-color: #ffffff;
-  border-radius: 50%;
-  margin: 0 auto 10px;
-  background-size: 70%;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-#small{
-  font-size: 10px !important;
-}
-
-/* Add icon styles (Example) */
-#songButtonOne .button-icon { background-image: url('../icons/drum.png'); }
-#songButtonTwo .button-icon { background-image: url('../icons/mic.png'); }
-#songButtonThree .button-icon { background-image: url('../icons/guitar.png'); }
-#songButtonFour .button-icon { background-image: url('../icons/violin.png'); }
-#songButtonFive .button-icon { background-image: url('../icons/cello.png'); }
-#songButtonSix .button-icon { background-image: url('../icons/piano.png'); }
-#songButtonSeven .button-icon { background-image: url('../icons/bass.png'); }
-#songButtonEight .button-icon { background-image: url('../icons/mic2.jpg'); }

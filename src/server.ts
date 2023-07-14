@@ -8,7 +8,7 @@ const port = 5500;
 // Apply CORS middleware
 
 app.use(cors());
-app.use(express.json()); // Parse JSON request bodies
+app.use(express.json({ limit: '10mb' })); // Parse JSON request bodies
 
 // MongoDB connection setup
 const uri = 'mongodb+srv://FynnJ:nicnjX5MjRSm4wtu@gis-ist-geil.wb5k5.mongodb.net/?retryWrites=true&w=majority';
@@ -28,25 +28,24 @@ interface Location {
   name: string;
   latitude: number;
   longitude: number;
-  soundUrl: string;
+  recordedAudio: String; // Add a new field for recorded audio file
 }
 
-// Save location endpoint
 app.post('/saveLocation', async (req: Request, res: Response) => {
-console.log("hallo");
-console.log(req.body);
-  const { id, name, latitude, longitude, soundUrl } = req.body as Location;
+  const { id, name, latitude, longitude, recordedAudio } = req.body as Location;
 
   try {
     const db: Db = client.db('Interactive_Audio');
     const locationsCollection = db.collection<Location>('locations');
 
-    const location = {
+    const audioBuffer = Buffer.from(recordedAudio, 'base64');
+
+    const location: Location = {
       id,
       name,
       latitude,
       longitude,
-      soundUrl,
+      recordedAudio: recordedAudio
     };
 
     // Insert the location document

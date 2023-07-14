@@ -252,3 +252,9 @@ async function loadSound(_url: string): Promise<void> {
 
 
 
+18 .07 
+
+Ende juli design dokument 
+
+
+https://norbertschnell.github.io/web-audio-basics/loops/

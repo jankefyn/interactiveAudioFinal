@@ -3,7 +3,7 @@ interface Location {
   name: string;
   latitude: number;
   longitude: number;
-  soundUrl: string;
+  recordedAudio: string; // Add a new field for recorded audio file
 }
 
 
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     name: string;
     latitude: number;
     longitude: number;
-    soundUrl: string;
+    recordedAudio: string; // Add a new field for recorded audio file
   }
 
   if (saveLocationButton) {
@@ -23,31 +23,61 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function saveLocation(): Promise<void> {
     const serverUrl = 'http://localhost:5500'; // Replace with your server's URL
-
+  
     const requestData: Location = {
       id: 1,
-      name: "" + prompt("enter a name for the location"),
+      name: "" + prompt("Enter a name for the location"),
       latitude: currentPosition.coords.latitude,
       longitude: currentPosition.coords.longitude,
-      soundUrl: "" + prompt("write a url for a sound you want to be played")
+      recordedAudio: "" // Placeholder for recorded audio data
     };
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', serverUrl + `/saveLocation`, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-          console.log('Server response:', xhr.responseText);
-        } else {
-          console.error('Error:', xhr.status);
-        }
-      }
-    };
-
-    xhr.send(JSON.stringify(requestData));
-  };
+  
+    const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mediaRecorder = new MediaRecorder(mediaStream);
+    const audioChunks: Blob[] = [];
+  
+    mediaRecorder.addEventListener('dataavailable', (event: BlobEvent) => {
+      audioChunks.push(event.data);
+    });
+  
+    mediaRecorder.addEventListener('stop', () => {
+      const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+  
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64Data = reader.result?.toString();
+        requestData.recordedAudio = base64Data || "";
+  
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', serverUrl + `/saveLocation`, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+  
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+              console.log('Server response:', xhr.responseText);
+            } else {
+              console.error('Error:', xhr.status);
+            }
+          }
+        };
+  
+        xhr.send(JSON.stringify(requestData));
+      };
+  
+      reader.readAsDataURL(audioBlob);
+    });
+  
+    mediaRecorder.start();
+  
+    // Prompt the user to start recording
+    alert('Click OK to start recording audio.');
+  
+    // Prompt the user to stop recording after a certain duration (e.g., 5 seconds)
+    setTimeout(() => {
+      mediaRecorder.stop();
+    }, 5000);
+  }
 });
 
 async function getLocations(): Promise<void> {
@@ -115,8 +145,8 @@ async function startGame(): Promise<void> {
   await getLocations();
   audioContext = new AudioContext();
   for (let location of receivedlocations) {
-    console.log(location.soundUrl);
-    loadSound(location.soundUrl);
+    console.log(location.recordedAudio);
+   
   }
   if ("geolocation" in navigator) {
     /* geolocation is available */
@@ -158,9 +188,9 @@ function checkForLocations(_currentCoordinates: GeolocationPosition): void {
     if (!musicPlaying) {
       if (d < 1.5) {
 
-        playAudioFromFile(location.soundUrl, true);
+        playEncodedAudio(location.recordedAudio);
         musicPlaying = true;
-        currentsound = location.soundUrl;
+        currentsound = location.recordedAudio;
         lastLocation = location.name;
         currentCoordinates.textContent = " du befindest dich in der nähe von: " + location.name + " deshalb hörst du etwas."
 
@@ -231,6 +261,32 @@ function playAudioFromFile(song: string, loop: boolean = false): void {
     .catch(error => {
       console.error('Error loading audio:', error);
     });
+}
+function playEncodedAudio(base64Audio: string) {
+  // Extract the base64 data after the comma
+  const base64Data = base64Audio.split(",")[1];
+
+  // Create a new AudioContext
+  const audioContext = new AudioContext();
+
+  // Decode the base64 audio data
+  const audioData = atob(base64Data);
+  const buffer = Uint8Array.from(audioData, c => c.charCodeAt(0));
+
+  // Create an AudioBufferSourceNode
+  const source = audioContext.createBufferSource();
+
+  // Decode the audio buffer
+  audioContext.decodeAudioData(buffer.buffer, decodedBuffer => {
+    // Set the decoded buffer as the source buffer
+    source.buffer = decodedBuffer;
+
+    // Connect the source node to the audio destination (e.g., speakers)
+    source.connect(audioContext.destination);
+
+    // Start playing the audio
+    source.start();
+  });
 }
 
 function stopAudio(): void {
