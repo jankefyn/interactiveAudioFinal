@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function saveLocation(): Promise<void> {
-    const serverUrl = 'https://git.heroku.com/interactive-audio.git'; // Replace with your server's URL
+    const serverUrl = 'https://interactive-audio-ce2f52bf3463.herokuapp.com/'; // Replace with your server's URL
 
     const requestData: Location = {
       id: 1,
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 async function getLocations(): Promise<void> {
-  const serverUrl = 'https://git.heroku.com/interactive-audio.git'; // Replace with your server's URL
+  const serverUrl = 'https://interactive-audio-ce2f52bf3463.herokuapp.com/'; // Replace with your server's URL
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', `${serverUrl}/getLocations`, true);
