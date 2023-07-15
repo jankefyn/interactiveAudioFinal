@@ -3,7 +3,7 @@ import { MongoClient, Db, ObjectId } from 'mongodb';
 import cors from 'cors';
 
 const app = express();
-const port = 5500;
+const port = process.env.PORT || 5500;
 
 // Apply CORS middleware
 
