@@ -7,7 +7,7 @@ const port = 5500;
 
 // Apply CORS middleware
 
-app.use(cors());
+app.use(cors("https://jankefyn.github.io/interactiveAudioFinal/"));
 app.use(express.json({ limit: '10mb' })); // Parse JSON request bodies
 
 // MongoDB connection setup
