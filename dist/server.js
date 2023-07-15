@@ -23,7 +23,7 @@ async function connectToMongoDB() {
         console.error('Error connecting to MongoDB', error);
     }
 }
-app.post('/saveLocation', async (req, res) => {
+app.post('//saveLocation', async (req, res) => {
     const { id, name, latitude, longitude, recordedAudio } = req.body;
     try {
         const db = client.db('Interactive_Audio');
@@ -47,7 +47,7 @@ app.post('/saveLocation', async (req, res) => {
     }
 });
 // Get all locations endpoint
-app.get('/getLocations', async (req, res) => {
+app.get('//getLocations', async (req, res) => {
     try {
         const db = client.db('Interactive_Audio');
         const locationsCollection = db.collection('locations');
