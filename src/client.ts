@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function saveLocation(): Promise<void> {
-    const serverUrl = 'http://localhost:5500'; // Replace with your server's URL
-  
+    const serverUrl = 'https://git.heroku.com/interactive-audio.git'; // Replace with your server's URL
+
     const requestData: Location = {
       id: 1,
       name: "" + prompt("Enter a name for the location"),
@@ -31,27 +31,27 @@ document.addEventListener('DOMContentLoaded', function () {
       longitude: currentPosition.coords.longitude,
       recordedAudio: "" // Placeholder for recorded audio data
     };
-  
+
     const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const mediaRecorder = new MediaRecorder(mediaStream);
     const audioChunks: Blob[] = [];
-  
+
     mediaRecorder.addEventListener('dataavailable', (event: BlobEvent) => {
       audioChunks.push(event.data);
     });
-  
+
     mediaRecorder.addEventListener('stop', () => {
       const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-  
+
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64Data = reader.result?.toString();
         requestData.recordedAudio = base64Data || "";
-  
+
         const xhr = new XMLHttpRequest();
         xhr.open('POST', serverUrl + `/saveLocation`, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
-  
+
         xhr.onreadystatechange = function () {
           if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
@@ -61,18 +61,18 @@ document.addEventListener('DOMContentLoaded', function () {
             }
           }
         };
-  
+
         xhr.send(JSON.stringify(requestData));
       };
-  
+
       reader.readAsDataURL(audioBlob);
     });
-  
+
     mediaRecorder.start();
-  
+
     // Prompt the user to start recording
     alert('Click OK to start recording audio.');
-  
+
     // Prompt the user to stop recording after a certain duration (e.g., 5 seconds)
     setTimeout(() => {
       mediaRecorder.stop();
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 async function getLocations(): Promise<void> {
-  const serverUrl = 'http://localhost:5500'; // Replace with your server's URL
+  const serverUrl = 'https://git.heroku.com/interactive-audio.git'; // Replace with your server's URL
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', `${serverUrl}/getLocations`, true);
@@ -146,7 +146,7 @@ async function startGame(): Promise<void> {
   audioContext = new AudioContext();
   for (let location of receivedlocations) {
     console.log(location.recordedAudio);
-   
+
   }
   if ("geolocation" in navigator) {
     /* geolocation is available */
@@ -296,7 +296,7 @@ function stopAudio(): void {
     sourceNode = null;
   }
 }
-async function loadSound(_sound:string): Promise<void> {
+async function loadSound(_sound: string): Promise<void> {
   let filePath: string = "";
   let number: number = +_sound;
   switch (number) {
