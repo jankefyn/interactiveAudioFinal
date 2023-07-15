@@ -31,7 +31,7 @@ interface Location {
   recordedAudio: String; // Add a new field for recorded audio file
 }
 
-app.post('//saveLocation', async (req: Request, res: Response) => {
+app.post('/saveLocation', async (req: Request, res: Response) => {
   const { id, name, latitude, longitude, recordedAudio } = req.body as Location;
 
   try {
@@ -60,7 +60,7 @@ app.post('//saveLocation', async (req: Request, res: Response) => {
 });
 
 // Get all locations endpoint
-app.get('//getLocations', async (req: Request, res: Response) => {
+app.get('/getLocations', async (req: Request, res: Response) => {
   try {
     const db: Db = client.db('Interactive_Audio');
     const locationsCollection = db.collection<Location>('locations');
