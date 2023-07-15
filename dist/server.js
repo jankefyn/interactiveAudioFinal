@@ -9,7 +9,7 @@ const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 const port = 5500;
 // Apply CORS middleware
-app.use((0, cors_1.default)("https://jankefyn.github.io/interactiveAudioFinal/"));
+app.use((0, cors_1.default)());
 app.use(express_1.default.json({ limit: '10mb' })); // Parse JSON request bodies
 // MongoDB connection setup
 const uri = 'mongodb+srv://FynnJ:nicnjX5MjRSm4wtu@gis-ist-geil.wb5k5.mongodb.net/?retryWrites=true&w=majority';
