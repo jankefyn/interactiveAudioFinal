@@ -1,12 +1,20 @@
 #saveLocationButton.hidden {
-  display: none; /* Keeps the hidden class on Save Location button */
+  display: none;
+  /* Keeps the hidden class on Save Location button */
 }
-#startButton.hidden{
+
+#startButton.hidden {
   display: none;
 }
-#playSoundButton.hidden{
+
+#playSoundButton.hidden {
   display: none;
 }
+
+#mapButon.hidden {
+  display: none;
+}
+
 /* Style for Start Game button */
 #startButton {
   background-color: #4CAF50;
@@ -34,6 +42,7 @@
   margin: 10px;
   cursor: pointer;
 }
+
 #playSoundButton {
   background-color: #008CBA;
   border: none;
@@ -46,10 +55,22 @@
   margin: 10px;
   cursor: pointer;
 }
+
+#mapButton {
+  background-color: #008CBA;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px;
+  cursor: pointer;
+}
+
 .button-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
-
-

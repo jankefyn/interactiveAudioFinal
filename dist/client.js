@@ -42,9 +42,9 @@ document.addEventListener('DOMContentLoaded', function () {
             };
             reader.readAsDataURL(audioBlob);
         });
-        mediaRecorder.start();
         // Prompt the user to start recording
         alert('Click OK to start recording audio.');
+        mediaRecorder.start();
         // Prompt the user to stop recording after a certain duration (e.g., 5 seconds)
         setTimeout(() => {
             mediaRecorder.stop();
@@ -79,8 +79,12 @@ async function getLocations() {
 let startButton = document.getElementById("startButton");
 let saveLocationButton = document.getElementById("saveLocationButton");
 let playSoundButton = document.getElementById('playSoundButton');
+let mapButton = document.getElementById('mapButton');
 if (startButton != null) {
     startButton.addEventListener("click", startGame);
+}
+if (mapButton != null) {
+    mapButton.addEventListener("click", initMap);
 }
 let musicPlaying = false;
 let currentsound = "";
@@ -103,6 +107,9 @@ async function startGame() {
     if (saveLocationButton != null) {
         saveLocationButton.classList.remove("hidden");
     }
+    if (mapButton != null) {
+        mapButton.classList.remove("hidden");
+    }
     await getLocations();
     audioContext = new AudioContext();
     for (let location of receivedlocations) {
@@ -120,7 +127,6 @@ async function startGame() {
 function success(_pos) {
     currentPosition = _pos;
     checkForLocations(_pos);
-    initMap();
 }
 function checkDistanceBetween(_pos, _lat, _long) {
     let R = 6371; // Radius of the earth in km
@@ -164,6 +170,7 @@ function checkForLocations(_currentCoordinates) {
 }
 //audio
 let sourceNode = null;
+initMap();
 function playEncodedAudio() {
     // Extract the base64 data after the comma
     const base64Data = currentsound.split(",")[1];
@@ -198,6 +205,7 @@ function stopAudio() {
     }
 }
 function initMap() {
+    mapButton?.classList.add("hidden");
     const map = new window.Microsoft.Maps.Map(document.getElementById('map'), {
         center: new window.Microsoft.Maps.Location(currentPosition.coords.latitude, currentPosition.coords.longitude),
         zoom: 19, // Set an appropriate initial zoom level

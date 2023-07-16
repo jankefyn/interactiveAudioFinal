@@ -69,11 +69,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
       reader.readAsDataURL(audioBlob);
     });
-
-    mediaRecorder.start();
-
     // Prompt the user to start recording
     alert('Click OK to start recording audio.');
+    mediaRecorder.start();
+
+
 
     // Prompt the user to stop recording after a certain duration (e.g., 5 seconds)
     setTimeout(() => {
@@ -114,8 +114,12 @@ async function getLocations(): Promise<void> {
 let startButton: HTMLElement | null = document.getElementById("startButton");
 let saveLocationButton: HTMLElement | null = document.getElementById("saveLocationButton");
 let playSoundButton: HTMLElement | null = document.getElementById('playSoundButton');
+let mapButton: HTMLElement | null = document.getElementById('mapButton');
 if (startButton != null) {
   startButton.addEventListener("click", startGame);
+}
+if (mapButton != null) {
+  mapButton.addEventListener("click", initMap);
 }
 
 
@@ -145,6 +149,9 @@ async function startGame(): Promise<void> {
   if (saveLocationButton != null) {
     saveLocationButton.classList.remove("hidden");
   }
+  if (mapButton != null) {
+    mapButton.classList.remove("hidden");
+  }
   await getLocations();
   audioContext = new AudioContext();
   for (let location of receivedlocations) {
@@ -164,7 +171,7 @@ function success(_pos: GeolocationPosition): void {
 
   currentPosition = _pos;
   checkForLocations(_pos);
-  initMap();
+
 }
 function checkDistanceBetween(_pos: GeolocationPosition, _lat: number, _long: number) {
   let R: number = 6371; // Radius of the earth in km
@@ -216,6 +223,9 @@ function checkForLocations(_currentCoordinates: GeolocationPosition): void {
 
 let sourceNode: AudioBufferSourceNode | null = null;
 
+
+
+initMap();
 
 function playEncodedAudio() {
   // Extract the base64 data after the comma
@@ -361,6 +371,7 @@ interface Window {
 
 
 function initMap() {
+  mapButton?.classList.add("hidden");
   const map = new window.Microsoft.Maps.Map(document.getElementById('map'), {
     center: new window.Microsoft.Maps.Location(currentPosition.coords.latitude, currentPosition.coords.longitude),
     zoom: 19, // Set an appropriate initial zoom level
