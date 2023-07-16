@@ -170,8 +170,12 @@ function playEncodedAudio(base64Audio) {
     audioContext.decodeAudioData(buffer.buffer, decodedBuffer => {
         // Set the decoded buffer as the source buffer
         source.buffer = decodedBuffer;
-        // Connect the source node to the audio destination (e.g., speakers)
-        source.connect(audioContext.destination);
+        // Create an intermediate GainNode
+        const gainNode = audioContext.createGain();
+        // Connect the source node to the gain node
+        source.connect(gainNode);
+        // Connect the gain node to the audio destination (e.g., speakers)
+        gainNode.connect(audioContext.destination);
         // Start playing the audio
         source.start();
     });
