@@ -363,7 +363,7 @@ interface Window {
 function initMap() {
   const map = new window.Microsoft.Maps.Map(document.getElementById('map'), {
     center: new window.Microsoft.Maps.Location(currentPosition.coords.latitude, currentPosition.coords.longitude),
-    zoom: 2, // Set an appropriate initial zoom level
+    zoom: 19, // Set an appropriate initial zoom level
   });
 
 
