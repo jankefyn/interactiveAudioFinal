@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (saveLocationButton) {
     saveLocationButton.addEventListener('click', saveLocation);
   }
-  
+
 
   async function saveLocation(): Promise<void> {
     const serverUrl = 'https://interactive-audio-ce2f52bf3463.herokuapp.com/'; // Replace with your server's URL
@@ -113,7 +113,7 @@ async function getLocations(): Promise<void> {
 
 let startButton: HTMLElement | null = document.getElementById("startButton");
 let saveLocationButton: HTMLElement | null = document.getElementById("saveLocationButton");
-let playSoundButton: HTMLElement | null  = document.getElementById('playSoundButton');
+let playSoundButton: HTMLElement | null = document.getElementById('playSoundButton');
 if (startButton != null) {
   startButton.addEventListener("click", startGame);
 }
@@ -161,9 +161,10 @@ async function startGame(): Promise<void> {
   }
 }
 function success(_pos: GeolocationPosition): void {
-  
+
   currentPosition = _pos;
   checkForLocations(_pos);
+  initMap();
 }
 function checkDistanceBetween(_pos: GeolocationPosition, _lat: number, _long: number) {
   let R: number = 6371; // Radius of the earth in km
@@ -353,3 +354,27 @@ async function loadSound(_sound: string): Promise<void> {
       console.error('Error loading audio:', error);
     });
 }*/
+
+interface Window {
+  Microsoft: any;
+}
+
+
+function initMap() {
+  const map = new window.Microsoft.Maps.Map(document.getElementById('map'), {
+    center: new window.Microsoft.Maps.Location(currentPosition.coords.latitude, currentPosition.coords.longitude),
+    zoom: 2, // Set an appropriate initial zoom level
+  });
+
+
+
+  // Place blue points on the map for each location
+  for (let location of receivedlocations) {
+    const pin = new window.Microsoft.Maps.Pushpin(new window.Microsoft.Maps.Location(location.latitude, location.longitude), {
+      color: 'blue',
+      icon: 'pin.png', // You can use a custom pin image if desired
+    });
+
+    map.entities.push(pin);
+  }
+}

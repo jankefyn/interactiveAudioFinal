@@ -120,6 +120,7 @@ async function startGame() {
 function success(_pos) {
     currentPosition = _pos;
     checkForLocations(_pos);
+    initMap();
 }
 function checkDistanceBetween(_pos, _lat, _long) {
     let R = 6371; // Radius of the earth in km
@@ -196,95 +197,17 @@ function stopAudio() {
         sourceNode = null;
     }
 }
-/*
-async function loadSound(_sound: string): Promise<void> {
-  let filePath: string = "";
-  let number: number = +_sound;
-  switch (number) {
-    case 1:
-      filePath = "../sounds/iBau.mp3"
-      console.log("Case 1");
-      break;
-    case 2:
-      console.log("Case 2");
-      break;
-    case 3:
-      console.log("Case 3");
-      break;
-    case 4:
-      console.log("Case 4");
-      break;
-    case 5:
-      console.log("Case 5");
-      break;
-    case 6:
-      console.log("Case 6");
-      break;
-    case 7:
-      console.log("Case 7");
-      break;
-    case 8:
-      console.log("Case 8");
-      break;
-    default:
-      console.log("Invalid case");
-      break;
-  }
-
-  let response: Response = await fetch(filePath);
-  let arraybuffer: ArrayBuffer = await response.arrayBuffer();
-  let audioBuffer: AudioBuffer = await audioContext.decodeAudioData(arraybuffer);
-  audioBufferMap.set(filePath, audioBuffer);
-}*/
-/*function playAudioFromFile(song: string, loop: boolean = false): void {
-  const audioContext = new AudioContext();
-  let number: number = +song;
-  let filePath: string = "";
-
-  switch (number) {
-    case 1:
-      filePath = "../sounds/iBau.mp3"
-      console.log("Case 1");
-      break;
-    case 2:
-      console.log("Case 2");
-      break;
-    case 3:
-      console.log("Case 3");
-      break;
-    case 4:
-      console.log("Case 4");
-      break;
-    case 5:
-      console.log("Case 5");
-      break;
-    case 6:
-      console.log("Case 6");
-      break;
-    case 7:
-      console.log("Case 7");
-      break;
-    case 8:
-      console.log("Case 8");
-      break;
-    default:
-      console.log("Invalid case");
-      break;
-  }
-  fetch(filePath)
-    .then(response => response.arrayBuffer())
-    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-    .then(audioBuffer => {
-      sourceNode = audioContext.createBufferSource();
-      sourceNode.buffer = audioBuffer;
-      if (loop) {
-        sourceNode.loop = true;
-        sourceNode.loopEnd = audioBuffer.duration;
-      }
-      sourceNode.connect(audioContext.destination);
-      sourceNode.start();
-    })
-    .catch(error => {
-      console.error('Error loading audio:', error);
+function initMap() {
+    const map = new window.Microsoft.Maps.Map(document.getElementById('map'), {
+        center: new window.Microsoft.Maps.Location(currentPosition.coords.latitude, currentPosition.coords.longitude),
+        zoom: 2, // Set an appropriate initial zoom level
     });
-}*/ 
+    // Place blue points on the map for each location
+    for (let location of receivedlocations) {
+        const pin = new window.Microsoft.Maps.Pushpin(new window.Microsoft.Maps.Location(location.latitude, location.longitude), {
+            color: 'blue',
+            icon: 'pin.png', // You can use a custom pin image if desired
+        });
+        map.entities.push(pin);
+    }
+}
