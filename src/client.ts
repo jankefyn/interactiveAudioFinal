@@ -372,23 +372,29 @@ namespace Microsoft {
     mapButton?.classList.add("hidden");
     const mapElement = document.getElementById("map");
     if (mapElement) {
-      const map:Maps.Map = new window.Microsoft.Maps.Map(mapElement, {
-        center: new window.Microsoft.Maps.Location(0, 0),
-        zoom: 14, // Set an appropriate initial zoom level (adjust as needed)
+      const map: Maps.Map = new window.Microsoft.Maps.Map(mapElement, {
+        center: new window.Microsoft.Maps.Location(currentPosition.coords.latitude, currentPosition.coords.longitude),
+        zoom: 15, // Set an appropriate initial zoom level (adjust as needed)
       });
+      let userLocation = new Microsoft.Maps.Location(
+        currentPosition.coords.latitude,
+        currentPosition.coords.longitude
+      );
+      let userPin = new Microsoft.Maps.Pushpin(userLocation);
+      map.entities.push(userPin);
 
+     
 
- 
 
       // Place blue points on the map for each location
-    
+
       for (let location of receivedlocations) {
         const pin = new window.Microsoft.Maps.Pushpin(new window.Microsoft.Maps.Location(location.latitude, location.longitude), {
           color: 'blue',
         });
-        map.entities.push(pin); 
+        map.entities.push(pin);
       }
-      
+
     }
   }
 }

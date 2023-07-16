@@ -3,6 +3,7 @@ declare namespace Microsoft.Maps {
       constructor(mapElement: HTMLElement, options?: MapOptions);
   
       entities: EntityCollection; // Add the entities property to the Map class
+  
     }
   
     export interface MapOptions {
