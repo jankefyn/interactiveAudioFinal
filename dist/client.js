@@ -170,7 +170,6 @@ function checkForLocations(_currentCoordinates) {
 }
 //audio
 let sourceNode = null;
-initMap();
 function playEncodedAudio() {
     // Extract the base64 data after the comma
     const base64Data = currentsound.split(",")[1];
@@ -214,7 +213,6 @@ function initMap() {
     for (let location of receivedlocations) {
         const pin = new window.Microsoft.Maps.Pushpin(new window.Microsoft.Maps.Location(location.latitude, location.longitude), {
             color: 'blue',
-            icon: 'pin.png', // You can use a custom pin image if desired
         });
         map.entities.push(pin);
     }
