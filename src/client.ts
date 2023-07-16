@@ -158,8 +158,7 @@ async function startGame(): Promise<void> {
   }
 }
 function success(_pos: GeolocationPosition): void {
-  currentCoordinates.textContent = "" + _pos.coords.latitude + ", " + _pos.coords.longitude;
-  //currentCoordinates.textContent = currentCoordinates.textContent + "distanz zum ziel" + checkDistanceBetween(_pos, 47.579136, 7.6218368);
+  
   currentPosition = _pos;
   checkForLocations(_pos);
 }
@@ -210,7 +209,84 @@ function checkForLocations(_currentCoordinates: GeolocationPosition): void {
 
 let sourceNode: AudioBufferSourceNode | null = null;
 
-function playAudioFromFile(song: string, loop: boolean = false): void {
+
+function playEncodedAudio(base64Audio: string) {
+  // Extract the base64 data after the comma
+  const base64Data = base64Audio.split(",")[1];
+
+  // Create a new AudioContext
+  const audioContext = new AudioContext();
+
+  // Decode the base64 audio data
+  const audioData = atob(base64Data);
+  const buffer = Uint8Array.from(audioData, c => c.charCodeAt(0));
+
+  // Create an AudioBufferSourceNode
+  const source = audioContext.createBufferSource();
+
+  // Decode the audio buffer
+  audioContext.decodeAudioData(buffer.buffer, decodedBuffer => {
+    // Set the decoded buffer as the source buffer
+    source.buffer = decodedBuffer;
+
+    // Connect the source node to the audio destination (e.g., speakers)
+    source.connect(audioContext.destination);
+
+    // Start playing the audio
+    source.start();
+  });
+}
+
+function stopAudio(): void {
+  if (sourceNode) {
+    sourceNode.stop();
+    sourceNode.disconnect();
+    sourceNode = null;
+  }
+}
+
+
+/*
+async function loadSound(_sound: string): Promise<void> {
+  let filePath: string = "";
+  let number: number = +_sound;
+  switch (number) {
+    case 1:
+      filePath = "../sounds/iBau.mp3"
+      console.log("Case 1");
+      break;
+    case 2:
+      console.log("Case 2");
+      break;
+    case 3:
+      console.log("Case 3");
+      break;
+    case 4:
+      console.log("Case 4");
+      break;
+    case 5:
+      console.log("Case 5");
+      break;
+    case 6:
+      console.log("Case 6");
+      break;
+    case 7:
+      console.log("Case 7");
+      break;
+    case 8:
+      console.log("Case 8");
+      break;
+    default:
+      console.log("Invalid case");
+      break;
+  }
+
+  let response: Response = await fetch(filePath);
+  let arraybuffer: ArrayBuffer = await response.arrayBuffer();
+  let audioBuffer: AudioBuffer = await audioContext.decodeAudioData(arraybuffer);
+  audioBufferMap.set(filePath, audioBuffer);
+}*/
+/*function playAudioFromFile(song: string, loop: boolean = false): void {
   const audioContext = new AudioContext();
   let number: number = +song;
   let filePath: string = "";
@@ -261,77 +337,4 @@ function playAudioFromFile(song: string, loop: boolean = false): void {
     .catch(error => {
       console.error('Error loading audio:', error);
     });
-}
-function playEncodedAudio(base64Audio: string) {
-  // Extract the base64 data after the comma
-  const base64Data = base64Audio.split(",")[1];
-
-  // Create a new AudioContext
-  const audioContext = new AudioContext();
-
-  // Decode the base64 audio data
-  const audioData = atob(base64Data);
-  const buffer = Uint8Array.from(audioData, c => c.charCodeAt(0));
-
-  // Create an AudioBufferSourceNode
-  const source = audioContext.createBufferSource();
-
-  // Decode the audio buffer
-  audioContext.decodeAudioData(buffer.buffer, decodedBuffer => {
-    // Set the decoded buffer as the source buffer
-    source.buffer = decodedBuffer;
-
-    // Connect the source node to the audio destination (e.g., speakers)
-    source.connect(audioContext.destination);
-
-    // Start playing the audio
-    source.start();
-  });
-}
-
-function stopAudio(): void {
-  if (sourceNode) {
-    sourceNode.stop();
-    sourceNode.disconnect();
-    sourceNode = null;
-  }
-}
-async function loadSound(_sound: string): Promise<void> {
-  let filePath: string = "";
-  let number: number = +_sound;
-  switch (number) {
-    case 1:
-      filePath = "../sounds/iBau.mp3"
-      console.log("Case 1");
-      break;
-    case 2:
-      console.log("Case 2");
-      break;
-    case 3:
-      console.log("Case 3");
-      break;
-    case 4:
-      console.log("Case 4");
-      break;
-    case 5:
-      console.log("Case 5");
-      break;
-    case 6:
-      console.log("Case 6");
-      break;
-    case 7:
-      console.log("Case 7");
-      break;
-    case 8:
-      console.log("Case 8");
-      break;
-    default:
-      console.log("Invalid case");
-      break;
-  }
-
-  let response: Response = await fetch(filePath);
-  let arraybuffer: ArrayBuffer = await response.arrayBuffer();
-  let audioBuffer: AudioBuffer = await audioContext.decodeAudioData(arraybuffer);
-  audioBufferMap.set(filePath, audioBuffer);
-}
+}*/
