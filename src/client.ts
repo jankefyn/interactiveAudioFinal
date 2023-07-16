@@ -256,9 +256,10 @@ function stopAudio(): void {
 
 
 async function playBase64AudioOnMobile(base64Audio: string) {
+  const base64Data = base64Audio.split(",")[1];
   try {
     // Convert the base64 audio data to ArrayBuffer
-    const arrayBuffer = base64ToArrayBuffer(base64Audio);
+    const arrayBuffer = base64ToArrayBuffer(base64Data);
 
     // Create an AudioContext (usually created on user interaction due to browser restrictions)
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
