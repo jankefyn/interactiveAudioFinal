@@ -140,7 +140,8 @@ function checkForLocations(_currentCoordinates) {
         let d = checkDistanceBetween(_currentCoordinates, location.latitude, location.longitude);
         if (!musicPlaying) {
             if (d < 1.5) {
-                playEncodedAudio(location.recordedAudio);
+                //playEncodedAudio(location.recordedAudio);
+                playBase64AudioOnMobile(location.recordedAudio);
                 musicPlaying = true;
                 currentsound = location.recordedAudio;
                 lastLocation = location.name;
@@ -186,6 +187,43 @@ function stopAudio() {
         sourceNode.disconnect();
         sourceNode = null;
     }
+}
+async function playBase64AudioOnMobile(base64Audio) {
+    try {
+        // Convert the base64 audio data to ArrayBuffer
+        const arrayBuffer = base64ToArrayBuffer(base64Audio);
+        // Create an AudioContext (usually created on user interaction due to browser restrictions)
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        // Decode the ArrayBuffer to create an audio buffer
+        const audioBuffer = await decodeArrayBufferToAudioBuffer(audioContext, arrayBuffer);
+        // Create a buffer source node
+        const bufferSource = audioContext.createBufferSource();
+        bufferSource.buffer = audioBuffer;
+        // Connect the buffer source node to the audio destination (the speakers)
+        bufferSource.connect(audioContext.destination);
+        // Play the audio
+        bufferSource.start();
+        console.log('Audio is now playing...');
+    }
+    catch (error) {
+        console.error('Error playing audio:', error);
+    }
+}
+// Utility function to convert base64 to ArrayBuffer
+function base64ToArrayBuffer(base64) {
+    const binaryString = atob(base64);
+    const length = binaryString.length;
+    const bytes = new Uint8Array(length);
+    for (let i = 0; i < length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
+// Utility function to decode ArrayBuffer to AudioBuffer
+function decodeArrayBufferToAudioBuffer(audioContext, arrayBuffer) {
+    return new Promise((resolve, reject) => {
+        audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => resolve(audioBuffer), (error) => reject(error));
+    });
 }
 /*
 async function loadSound(_sound: string): Promise<void> {
