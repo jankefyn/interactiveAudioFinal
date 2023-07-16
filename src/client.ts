@@ -187,8 +187,7 @@ function checkForLocations(_currentCoordinates: GeolocationPosition): void {
     if (!musicPlaying) {
       if (d < 1.5) {
 
-        //playEncodedAudio(location.recordedAudio);
-        playBase64AudioOnMobile(location.recordedAudio)
+        playEncodedAudio(location.recordedAudio);
         musicPlaying = true;
         currentsound = location.recordedAudio;
         lastLocation = location.name;
@@ -239,6 +238,9 @@ function playEncodedAudio(base64Audio: string) {
     // Connect the gain node to the audio destination (e.g., speakers)
     gainNode.connect(audioContext.destination);
 
+    // Enable looping for the audio
+    source.loop = true; // This line enables looping
+
     // Start playing the audio
     source.start();
   });
@@ -250,59 +252,6 @@ function stopAudio(): void {
     sourceNode.disconnect();
     sourceNode = null;
   }
-}
-
-
-
-
-async function playBase64AudioOnMobile(base64Audio: string) {
-  const base64Data = base64Audio.split(",")[1];
-  try {
-    // Convert the base64 audio data to ArrayBuffer
-    const arrayBuffer = base64ToArrayBuffer(base64Data);
-
-    // Create an AudioContext (usually created on user interaction due to browser restrictions)
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-    // Decode the ArrayBuffer to create an audio buffer
-    const audioBuffer = await decodeArrayBufferToAudioBuffer(audioContext, arrayBuffer);
-
-    // Create a buffer source node
-    const bufferSource = audioContext.createBufferSource();
-    bufferSource.buffer = audioBuffer;
-
-    // Connect the buffer source node to the audio destination (the speakers)
-    bufferSource.connect(audioContext.destination);
-
-    // Play the audio
-    bufferSource.start();
-
-    console.log('Audio is now playing...');
-  } catch (error) {
-    console.error('Error playing audio:', error);
-  }
-}
-
-// Utility function to convert base64 to ArrayBuffer
-function base64ToArrayBuffer(base64: string): ArrayBuffer {
-  const binaryString = atob(base64);
-  const length = binaryString.length;
-  const bytes = new Uint8Array(length);
-  for (let i = 0; i < length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return bytes.buffer;
-}
-
-// Utility function to decode ArrayBuffer to AudioBuffer
-function decodeArrayBufferToAudioBuffer(audioContext: AudioContext, arrayBuffer: ArrayBuffer): Promise<AudioBuffer> {
-  return new Promise((resolve, reject) => {
-    audioContext.decodeAudioData(
-      arrayBuffer,
-      (audioBuffer) => resolve(audioBuffer),
-      (error) => reject(error)
-    );
-  });
 }
 
 
