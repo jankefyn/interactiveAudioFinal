@@ -78,6 +78,7 @@ async function getLocations() {
 //functionality
 let startButton = document.getElementById("startButton");
 let saveLocationButton = document.getElementById("saveLocationButton");
+let playSoundButton = document.getElementById('playSoundButton');
 if (startButton != null) {
     startButton.addEventListener("click", startGame);
 }
@@ -140,7 +141,10 @@ function checkForLocations(_currentCoordinates) {
         let d = checkDistanceBetween(_currentCoordinates, location.latitude, location.longitude);
         if (!musicPlaying) {
             if (d < 1.5) {
-                playEncodedAudio(location.recordedAudio);
+                if (playSoundButton) {
+                    playSoundButton.addEventListener('click', playEncodedAudio);
+                    playSoundButton.classList.remove("hidden");
+                }
                 musicPlaying = true;
                 currentsound = location.recordedAudio;
                 lastLocation = location.name;
@@ -149,6 +153,9 @@ function checkForLocations(_currentCoordinates) {
             }
         }
         if (musicPlaying && location.name === lastLocation && d > 10) {
+            if (saveLocationButton != null) {
+                saveLocationButton.classList.add("hidden");
+            }
             stopAudio();
             musicPlaying = false;
         }
@@ -156,9 +163,9 @@ function checkForLocations(_currentCoordinates) {
 }
 //audio
 let sourceNode = null;
-function playEncodedAudio(base64Audio) {
+function playEncodedAudio() {
     // Extract the base64 data after the comma
-    const base64Data = base64Audio.split(",")[1];
+    const base64Data = currentsound.split(",")[1];
     // Create a new AudioContext
     const audioContext = new AudioContext();
     // Decode the base64 audio data

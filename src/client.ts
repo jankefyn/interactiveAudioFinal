@@ -9,6 +9,7 @@ interface Location {
 
 document.addEventListener('DOMContentLoaded', function () {
   const saveLocationButton = document.getElementById('saveLocationButton');
+
   interface Location {
     id: number;
     name: string;
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (saveLocationButton) {
     saveLocationButton.addEventListener('click', saveLocation);
   }
+  
 
   async function saveLocation(): Promise<void> {
     const serverUrl = 'https://interactive-audio-ce2f52bf3463.herokuapp.com/'; // Replace with your server's URL
@@ -111,6 +113,7 @@ async function getLocations(): Promise<void> {
 
 let startButton: HTMLElement | null = document.getElementById("startButton");
 let saveLocationButton: HTMLElement | null = document.getElementById("saveLocationButton");
+let playSoundButton: HTMLElement | null  = document.getElementById('playSoundButton');
 if (startButton != null) {
   startButton.addEventListener("click", startGame);
 }
@@ -186,8 +189,10 @@ function checkForLocations(_currentCoordinates: GeolocationPosition): void {
     let d: number = checkDistanceBetween(_currentCoordinates, location.latitude, location.longitude);
     if (!musicPlaying) {
       if (d < 1.5) {
-
-        playEncodedAudio(location.recordedAudio);
+        if (playSoundButton) {
+          playSoundButton.addEventListener('click', playEncodedAudio);
+          playSoundButton.classList.remove("hidden");
+        }
         musicPlaying = true;
         currentsound = location.recordedAudio;
         lastLocation = location.name;
@@ -197,22 +202,23 @@ function checkForLocations(_currentCoordinates: GeolocationPosition): void {
       }
     }
     if (musicPlaying && location.name === lastLocation && d > 10) {
+      if (saveLocationButton != null) {
+        saveLocationButton.classList.add("hidden");
+      }
       stopAudio();
       musicPlaying = false;
     }
   }
 }
 
-
-
 //audio
 
 let sourceNode: AudioBufferSourceNode | null = null;
 
 
-function playEncodedAudio(base64Audio: string) {
+function playEncodedAudio() {
   // Extract the base64 data after the comma
-  const base64Data = base64Audio.split(",")[1];
+  const base64Data = currentsound.split(",")[1];
 
   // Create a new AudioContext
   const audioContext = new AudioContext();
