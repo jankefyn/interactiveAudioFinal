@@ -1,5 +1,3 @@
-import { promises } from "dns";
-
 namespace Microsoft {
 
   interface Location {
