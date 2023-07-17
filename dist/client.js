@@ -29,7 +29,7 @@ var Microsoft;
                     requestData.recordedAudio = base64Data || "";
                     let shouldContinue = true;
                     for (let location of receivedlocations) {
-                        if (location.name == requestData.name || location.name == "") {
+                        if (location.name == requestData.name || requestData.name == "") {
                             alert("Es gibt bereits eine Location mit diesem name.");
                             shouldContinue = false;
                             break;
