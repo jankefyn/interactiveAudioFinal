@@ -34,6 +34,7 @@ var Microsoft;
                             shouldContinue = false;
                             break;
                         }
+                        console.log("testing" + location.name + checkDistanceBetween(currentPosition, location.latitude, location.longitude));
                         if (checkDistanceBetween(currentPosition, location.latitude, location.longitude) <= 0.03) {
                             alert("du musst dich weiter als 30m von den anderen locations entfernen. Um die anderen eingetragenen Locations zu sehen kannst du die Karte aktivieren.");
                             shouldContinue = false;
@@ -110,6 +111,8 @@ var Microsoft;
     let currentPosition;
     let lastLocation = "";
     let receivedlocations = [];
+    let closestDistance = 999;
+    let closestLocation = "";
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioContext;
     let audioBufferMap = new Map();
@@ -147,6 +150,13 @@ var Microsoft;
     function success(_pos) {
         currentPosition = _pos;
         checkForLocations(_pos);
+        for (let location of receivedlocations) {
+            if (checkDistanceBetween(currentPosition, location.latitude, location.longitude) < closestDistance) {
+                closestDistance = checkDistanceBetween(currentPosition, location.latitude, location.longitude);
+                closestLocation = location.name;
+            }
+            currentCoordinates.textContent = " die naheliegenste Location ist" + closestLocation + " sie ist " + closestDistance + "meter entfernt.";
+        }
     }
     function checkDistanceBetween(_pos, _lat, _long) {
         let R = 6371; // Radius of the earth in km
@@ -175,7 +185,6 @@ var Microsoft;
                     musicPlaying = true;
                     currentsound = location.recordedAudio;
                     lastLocation = location.name;
-                    currentCoordinates.textContent = " du befindest dich in der nähe von: " + location.name + " Wenn du den hier platzierten sound hören möchtest klicke auf den Play Sound button.";
                     break;
                 }
             }

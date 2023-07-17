@@ -60,16 +60,17 @@ namespace Microsoft {
               shouldContinue = false;
               break;
             }
+            console.log("testing" + location.name + checkDistanceBetween(currentPosition, location.latitude, location.longitude));
             if (checkDistanceBetween(currentPosition, location.latitude, location.longitude) <= 0.03) {
               alert("du musst dich weiter als 30m von den anderen locations entfernen. Um die anderen eingetragenen Locations zu sehen kannst du die Karte aktivieren.")
               shouldContinue = false;
               break;
             }
           }
-          if (!shouldContinue){
+          if (!shouldContinue) {
             return;
           }
-            refresh();
+          refresh();
 
           const xhr = new XMLHttpRequest();
           xhr.open('POST', serverUrl + `/saveLocation`, true);
@@ -147,6 +148,8 @@ namespace Microsoft {
   let currentPosition: GeolocationPosition;
   let lastLocation: string = "";
   let receivedlocations: Location[] = [];
+  let closestDistance: number = 999;
+  let closestLocation: string = "";
 
   window.AudioContext = window.AudioContext || window.webkitAudioContext;
   let audioContext: AudioContext;
@@ -193,6 +196,13 @@ namespace Microsoft {
     currentPosition = _pos;
     checkForLocations(_pos);
 
+    for (let location of receivedlocations) {
+      if (checkDistanceBetween(currentPosition, location.latitude, location.longitude) < closestDistance) {
+        closestDistance = checkDistanceBetween(currentPosition, location.latitude, location.longitude);
+        closestLocation = location.name;
+      }
+      currentCoordinates.textContent = " die naheliegenste Location ist" + closestLocation + " sie ist " + closestDistance + "meter entfernt."
+    }
   }
   function checkDistanceBetween(_pos: GeolocationPosition, _lat: number, _long: number) {
     let R: number = 6371; // Radius of the earth in km
@@ -225,7 +235,7 @@ namespace Microsoft {
           musicPlaying = true;
           currentsound = location.recordedAudio;
           lastLocation = location.name;
-          currentCoordinates.textContent = " du befindest dich in der nähe von: " + location.name + " Wenn du den hier platzierten sound hören möchtest klicke auf den Play Sound button."
+
 
           break;
         }
