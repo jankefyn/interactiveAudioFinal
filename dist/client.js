@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var Microsoft;
 (function (Microsoft) {
     document.addEventListener('DOMContentLoaded', function () {
@@ -27,6 +28,17 @@ var Microsoft;
                 reader.onloadend = () => {
                     const base64Data = reader.result?.toString();
                     requestData.recordedAudio = base64Data || "";
+                    for (let location of receivedlocations) {
+                        if (location.name == requestData.name || location.name == "") {
+                            alert("Es gibt bereits eine Location mit diesem name.");
+                            break;
+                        }
+                        if (checkDistanceBetween(currentPosition, location.latitude, location.longitude) <= 0.03) {
+                            alert("du musst dich weiter als 30m von den anderen locations entfernen. Um die anderen eingetragenen Locations zu sehen kannst du die Karte aktivieren.");
+                            break;
+                        }
+                    }
+                    refresh();
                     const xhr = new XMLHttpRequest();
                     xhr.open('POST', serverUrl + `/saveLocation`, true);
                     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -114,9 +126,6 @@ var Microsoft;
         }
         await getLocations();
         audioContext = new AudioContext();
-        for (let location of receivedlocations) {
-            console.log(location.recordedAudio);
-        }
         if ("geolocation" in navigator) {
             /* geolocation is available */
             navigator.geolocation.watchPosition(success, error, options);
@@ -125,6 +134,11 @@ var Microsoft;
             /* geolocation IS NOT available */
             currentCoordinates.textContent = "coordinates not available";
         }
+        initMap();
+    }
+    async function refresh() {
+        await getLocations();
+        initMap();
     }
     function success(_pos) {
         currentPosition = _pos;
