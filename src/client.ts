@@ -52,19 +52,24 @@ namespace Microsoft {
           const base64Data = reader.result?.toString();
           requestData.recordedAudio = base64Data || "";
 
+          let shouldContinue = true;
 
           for (let location of receivedlocations) {
             if (location.name == requestData.name || location.name == "") {
               alert("Es gibt bereits eine Location mit diesem name.");
+              shouldContinue = false;
               break;
             }
             if (checkDistanceBetween(currentPosition, location.latitude, location.longitude) <= 0.03) {
               alert("du musst dich weiter als 30m von den anderen locations entfernen. Um die anderen eingetragenen Locations zu sehen kannst du die Karte aktivieren.")
+              shouldContinue = false;
               break;
             }
           }
-
-          refresh();
+          if (!shouldContinue){
+            return;
+          }
+            refresh();
 
           const xhr = new XMLHttpRequest();
           xhr.open('POST', serverUrl + `/saveLocation`, true);
@@ -212,7 +217,7 @@ namespace Microsoft {
     for (let location of receivedlocations) {
       let d: number = checkDistanceBetween(_currentCoordinates, location.latitude, location.longitude);
       if (!musicPlaying) {
-        if (d < 1.5) {
+        if (d < 0.02) {
           if (playSoundButton) {
             playSoundButton.addEventListener('click', playEncodedAudio);
             playSoundButton.classList.remove("hidden");
@@ -220,7 +225,7 @@ namespace Microsoft {
           musicPlaying = true;
           currentsound = location.recordedAudio;
           lastLocation = location.name;
-          currentCoordinates.textContent = " du befindest dich in der nähe von: " + location.name + " deshalb hörst du etwas."
+          currentCoordinates.textContent = " du befindest dich in der nähe von: " + location.name + " Wenn du den hier platzierten sound hören möchtest klicke auf den Play Sound button."
 
           break;
         }
