@@ -255,9 +255,9 @@ namespace Microsoft {
           break;
         }
       }
-      if (musicPlaying && location.name === lastLocation && d > 10) {
-        if (saveLocationButton != null) {
-          saveLocationButton.classList.add("hidden");
+      if (musicPlaying && location.name == lastLocation && d > 0.022) {
+        if (playSoundButton != null) {
+          playSoundButton.classList.add("hidden");
         }
         stopAudio();
         musicPlaying = false;
