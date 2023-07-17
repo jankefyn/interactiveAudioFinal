@@ -70,7 +70,7 @@ namespace Microsoft {
           if (!shouldContinue) {
             return;
           }
-          refresh();
+
 
           const xhr = new XMLHttpRequest();
           xhr.open('POST', serverUrl + `/saveLocation`, true);
@@ -88,8 +88,8 @@ namespace Microsoft {
 
           xhr.send(JSON.stringify(requestData));
         };
-
         reader.readAsDataURL(audioBlob);
+        refresh();
       });
       // Prompt the user to start recording
       alert('Click OK to start recording audio.');
@@ -189,7 +189,9 @@ namespace Microsoft {
 
   async function refresh(): Promise<void> {
     await getLocations();
-    initMap()
+    setTimeout(() => {
+      initMap();
+    }, 5000);
   }
 
   function success(_pos: GeolocationPosition): void {
@@ -209,7 +211,7 @@ namespace Microsoft {
       }
 
     }
-    currentCoordinates.textContent = " die naheliegenste Location ist" + closestLocation + " sie ist " + closestDistance + "meter entfernt."
+    currentCoordinates.textContent = " die naheliegenste Location ist" + closestLocation + " sie ist " + closestDistance + " kilometer entfernt."
     firstLoop = true;
   }
   function checkDistanceBetween(_pos: GeolocationPosition, _lat: number, _long: number) {

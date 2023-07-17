@@ -44,7 +44,6 @@ var Microsoft;
                     if (!shouldContinue) {
                         return;
                     }
-                    refresh();
                     const xhr = new XMLHttpRequest();
                     xhr.open('POST', serverUrl + `/saveLocation`, true);
                     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -61,6 +60,7 @@ var Microsoft;
                     xhr.send(JSON.stringify(requestData));
                 };
                 reader.readAsDataURL(audioBlob);
+                refresh();
             });
             // Prompt the user to start recording
             alert('Click OK to start recording audio.');
@@ -146,7 +146,9 @@ var Microsoft;
     }
     async function refresh() {
         await getLocations();
-        initMap();
+        setTimeout(() => {
+            initMap();
+        }, 5000);
     }
     function success(_pos) {
         currentPosition = _pos;
@@ -162,7 +164,7 @@ var Microsoft;
                 closestLocation = location.name;
             }
         }
-        currentCoordinates.textContent = " die naheliegenste Location ist" + closestLocation + " sie ist " + closestDistance + "meter entfernt.";
+        currentCoordinates.textContent = " die naheliegenste Location ist" + closestLocation + " sie ist " + closestDistance + " kilometer entfernt.";
         firstLoop = true;
     }
     function checkDistanceBetween(_pos, _lat, _long) {
