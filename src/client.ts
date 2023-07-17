@@ -176,7 +176,6 @@ namespace Microsoft {
       /* geolocation IS NOT available */
       currentCoordinates.textContent = "coordinates not available";
     }
-    initMap()
   }
 
   async function refresh(): Promise<void> {
