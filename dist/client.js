@@ -154,6 +154,7 @@ var Microsoft;
         for (let location of receivedlocations) {
             if (firstLoop) {
                 closestDistance = checkDistanceBetween(currentPosition, location.latitude, location.longitude);
+                closestLocation = location.name;
                 firstLoop = false;
             }
             if (checkDistanceBetween(currentPosition, location.latitude, location.longitude) < closestDistance) {
