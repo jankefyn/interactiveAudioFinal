@@ -150,6 +150,7 @@ namespace Microsoft {
   let receivedlocations: Location[] = [];
   let closestDistance: number = 999;
   let closestLocation: string = "";
+  let firstLoop: boolean = true;
 
   window.AudioContext = window.AudioContext || window.webkitAudioContext;
   let audioContext: AudioContext;
@@ -197,12 +198,18 @@ namespace Microsoft {
     checkForLocations(_pos);
 
     for (let location of receivedlocations) {
+      if (firstLoop) {
+        closestDistance = checkDistanceBetween(currentPosition, location.latitude, location.longitude);
+        firstLoop = false;
+      }
       if (checkDistanceBetween(currentPosition, location.latitude, location.longitude) < closestDistance) {
         closestDistance = checkDistanceBetween(currentPosition, location.latitude, location.longitude);
         closestLocation = location.name;
       }
-      currentCoordinates.textContent = " die naheliegenste Location ist" + closestLocation + " sie ist " + closestDistance + "meter entfernt."
+
     }
+    currentCoordinates.textContent = " die naheliegenste Location ist" + closestLocation + " sie ist " + closestDistance + "meter entfernt."
+    firstLoop = true;
   }
   function checkDistanceBetween(_pos: GeolocationPosition, _lat: number, _long: number) {
     let R: number = 6371; // Radius of the earth in km
