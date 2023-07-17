@@ -114,6 +114,7 @@ var Microsoft;
     let closestDistance = 999;
     let closestLocation = "";
     let firstLoop = true;
+    let mapChanged = false;
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioContext;
     let audioBufferMap = new Map();
@@ -145,10 +146,12 @@ var Microsoft;
         }
     }
     async function refresh() {
-        await getLocations();
-        setTimeout(() => {
-            initMap();
-        }, 5000);
+        if (!mapChanged) {
+            setTimeout(() => {
+                initMap();
+            }, 5000);
+            mapChanged = true;
+        }
     }
     function success(_pos) {
         currentPosition = _pos;
@@ -166,6 +169,7 @@ var Microsoft;
         }
         currentCoordinates.textContent = " die naheliegenste Location ist" + closestLocation + " sie ist " + closestDistance + " kilometer entfernt.";
         firstLoop = true;
+        refresh();
     }
     function checkDistanceBetween(_pos, _lat, _long) {
         let R = 6371; // Radius of the earth in km
@@ -232,9 +236,14 @@ var Microsoft;
             source.loop = true; // This line enables looping
             // Start playing the audio
             source.start();
+            // Update the sourceNode variable with the current AudioBufferSourceNode
+            sourceNode = source;
         });
     }
     function stopAudio() {
+        if (playSoundButton) {
+            playSoundButton.classList.add("hidden");
+        }
         if (sourceNode) {
             sourceNode.stop();
             sourceNode.disconnect();
@@ -333,7 +342,8 @@ var Microsoft;
           console.error('Error loading audio:', error);
         });
     }*/
-    function initMap() {
+    async function initMap() {
+        await getLocations();
         mapButton?.classList.add("hidden");
         const mapElement = document.getElementById("map");
         if (mapElement) {
@@ -352,5 +362,8 @@ var Microsoft;
                 map.entities.push(pin);
             }
         }
+        setTimeout(() => {
+            mapChanged = false;
+        }, 5000);
     }
 })(Microsoft || (Microsoft = {}));

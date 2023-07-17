@@ -151,6 +151,7 @@ namespace Microsoft {
   let closestDistance: number = 999;
   let closestLocation: string = "";
   let firstLoop: boolean = true;
+  let mapChanged: boolean = false;
 
   window.AudioContext = window.AudioContext || window.webkitAudioContext;
   let audioContext: AudioContext;
@@ -188,10 +189,13 @@ namespace Microsoft {
   }
 
   async function refresh(): Promise<void> {
-    await getLocations();
-    setTimeout(() => {
-      initMap();
-    }, 5000);
+    if (!mapChanged) {
+      setTimeout(() => {
+        initMap();
+      }, 5000);
+      mapChanged = true;
+    }
+
   }
 
   function success(_pos: GeolocationPosition): void {
@@ -213,6 +217,7 @@ namespace Microsoft {
     }
     currentCoordinates.textContent = " die naheliegenste Location ist" + closestLocation + " sie ist " + closestDistance + " kilometer entfernt."
     firstLoop = true;
+    refresh();
   }
   function checkDistanceBetween(_pos: GeolocationPosition, _lat: number, _long: number) {
     let R: number = 6371; // Radius of the earth in km
@@ -301,10 +306,17 @@ namespace Microsoft {
 
       // Start playing the audio
       source.start();
+
+      // Update the sourceNode variable with the current AudioBufferSourceNode
+      sourceNode = source;
     });
   }
 
   function stopAudio(): void {
+    if (playSoundButton) {
+      playSoundButton.classList.add("hidden");
+    }
+
     if (sourceNode) {
       sourceNode.stop();
       sourceNode.disconnect();
@@ -407,7 +419,8 @@ namespace Microsoft {
   }*/
 
 
-  function initMap() {
+  async function initMap(): Promise<void> {
+    await getLocations();
     mapButton?.classList.add("hidden");
     const mapElement = document.getElementById("map");
     if (mapElement) {
@@ -435,5 +448,8 @@ namespace Microsoft {
       }
 
     }
+    setTimeout(() => {
+      mapChanged = false;
+    }, 5000);
   }
 }
